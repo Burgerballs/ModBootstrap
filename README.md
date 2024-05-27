@@ -2,7 +2,7 @@
  Basic mod loader for Friday Night Funkin'
 
 In order to make your mod compatible you will need to add this somewhere in your _polymod_meta.json
-```
+``` json
 "dependencies": {
     "modbootstrap": "*"
 },
