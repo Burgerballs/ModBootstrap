@@ -14,7 +14,7 @@ Also, instruct the person downloading your mod to keep the name of the mod folde
     "modbootstrap": "*"
 },
 ```
-And then add a Module .hxc script with a unique sounding name of your choice.
+And then add a .hxc script with a unique sounding name of your choice.
 
 ``` hx
 import funkin.modding.module.Module;
