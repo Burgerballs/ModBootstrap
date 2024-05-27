@@ -20,11 +20,11 @@ And then add a Module .hxc script with a unique sounding name of your choice.
 import funkin.modding.module.Module;
 import funkin.modding.module.ModuleHandler;
 
-class ExampleModBind extends Module {
+class ExampleModBind extends Module { // Replace the class name with a unique name of your choice
   var loadedGame:Bool = false;
 
   public function new() {
-      super("ExampleModBind");
+      super("ExampleModBind"); // Replace the string with a unique name of your choice
   }
   public function onCreate(event:ScriptEvent):Void {
     this.active = false;
