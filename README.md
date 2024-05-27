@@ -4,6 +4,9 @@
 
 
 In order to make your mod compatible you will need to add this somewhere in your _polymod_meta.json
+
+Also, instruct the person downloading your mod to keep the name of the mod folder exactly as ``modbootstrap``, because yeah.
+
 ``` json
 "dependencies": {
     "modbootstrap": "*"
