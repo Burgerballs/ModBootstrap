@@ -1,0 +1,79 @@
+import flixel.FlxG;
+
+import funkin.Preferences;
+
+import funkin.modding.base.ScriptedMusicBeatState;
+import funkin.modding.module.Module;
+import funkin.save.Save;
+import funkin.ui.title.TitleState;
+import funkin.util.ReflectUtil;
+import funkin.util.WindowUtil;
+import flixel.text.FlxText;
+import funkin.modding.module.ModuleHandler;
+
+class InitBootstrap extends Module {
+
+	var initialized:Bool = false;
+	var currentState:Dynamic;
+	var version:String = '0.1.0';
+	public function new() {
+      super("InitBootStrap", -1000);
+  }
+  public function onCreate(event:ScriptEvent):Void {
+		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
+			name: "Friday Night Funkin'",
+			description: "Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...",
+			target: "BaseTitleState",
+			logo: 'base-game-logo',
+      bg: '',
+      icon: 'fnficon32',
+      author: "The Funkin' Crew",
+			color: 0xFFff2b77,
+			bg_group: (group) -> {
+				return; // do nothing.
+			},
+			disclaimer: "This loads the vanilla game, mods that don't require this bootstrap will load as well."
+		}]);
+		FlxG.mouse.set_visible(false);
+
+    if (Save.instance.modOptions.get("ModBootstrap") == null) {
+			Save.instance.modOptions.set("ModBootstrap", {
+				current_mod: "", // Current mod, will be the mod that will load up on boot if load_menu_on_boot is disabled.
+        load_menu_on_boot: true // wether or not to load the menu before the title screen shows up. otherwise it will allow you to press tab in TitleState to bootstrap instead
+			});
+		}
+
+		WindowUtil.windowExit.add(exit);
+  }
+
+  public function onStateChangeEnd(event:StateChangeScriptEvent):Void {
+		currentState = event.targetState;
+		if (Std.isOfType(currentState, TitleState) && !initialized && load_menu_on_boot) {
+			FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
+			initialized = true;
+		}
+	}
+
+	public function onUpdate(e) {
+		if (Std.isOfType(currentState, TitleState)) {
+			if (FlxG.keys.justPressed.TAB) {
+				FlxG.sound.music.stop();
+				FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
+			}
+		}
+	}
+	public function onDestroy(event:ScriptEvent):Void {
+		if (Save.instance.modOptions.get("ModBootstrap").selected_mod == "none") {
+			Save.instance.modOptions.get("ModBootstrap").selected_mod = "";
+		}
+		Save.instance.flush();
+		if (WindowUtil.windowExit.has(exit)) {
+			WindowUtil.windowExit.remove(exit);
+		}
+	}
+
+	public function exit(_):Void {
+		Save.instance.modOptions.get("ModBootstrap").selected_mod = "";
+		Save.instance.flush();
+	}
+}

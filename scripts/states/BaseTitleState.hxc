@@ -1,0 +1,19 @@
+import flixel.FlxG;
+
+import funkin.Paths;
+import funkin.modding.base.ScriptedMusicBeatState;
+import funkin.ui.title.TitleState;
+
+class BaseTitleState extends ScriptedMusicBeatState {
+	public function new() {
+		super();
+	}
+
+	public function create():Void {
+		super.create();
+
+		TitleState.initialized = false;
+		FlxG.sound.music = null;
+		FlxG.switchState(new TitleState());
+	}
+}

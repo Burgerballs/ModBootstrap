@@ -1,0 +1,249 @@
+import openfl.filters.ShaderFilter;
+
+import flixel.FlxG;
+import flixel.addons.display.FlxBackdrop;
+import flixel.group.FlxTypedSpriteGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.util.FlxTimer;
+import flixel.FlxSprite;
+import Main;
+import funkin.Paths;
+import funkin.PlayerSettings;
+import funkin.audio.FunkinSound;
+import funkin.modding.base.ScriptedMusicBeatState;
+import funkin.modding.module.ModuleHandler;
+import funkin.save.Save;
+
+class BootStrapState extends ScriptedMusicBeatState {
+	var binds:Array<Dynamic>;
+  var cur_select:Int = 0; // current selected mod index
+  var mods_rendered:Array<FlxTypedSpriteGroup> = []; // This looks scary but i dont care nanna nanna boo boo!!
+	var mods_bg:Array<FlxTypedSpriteGroup> = []; // collection of sprites if a mod has any.
+	var intendedYs:Array<Float> = [];
+	var intendedHandY:Float;
+	var canMove = true;
+	var bgOverlay:FlxBackdrop;
+	var selectorunderlay:FlxSprite;
+	var bg:FlxSprite;
+	var handSprite:FlxSprite;
+	var logo:FlxSprite;
+	var titleText:FlxText;
+	var disclaimerText:FlxText;
+	var titleTween:FlxTween;
+	var descTween:FlxTween;
+	var bgTween:FlxTween;
+	var bggTween:FlxTween;
+	var descriptionTextBG:FlxSprite;
+	var descriptionText:FlxText;
+
+	public function new() {
+		super();
+		persistentUpdate = true;
+	}
+
+  public function create():Void {
+		super.create();
+		// create vanilla mod
+
+		// set selected mod to nothin!!!
+    Save.instance.modOptions.get("ModBootstrap").selected_mod = "";
+
+		// get da binds!!!!!
+    binds = ModuleHandler.getModule("BootStrapBinds").scriptGet("binds");
+
+		// do da sexy note overlay thing
+		bgOverlay = new FlxBackdrop(null, 0x01).loadGraphic(Paths.image('modloader-underlay'));
+		add(bgOverlay);
+		bgOverlay.flipY = true;
+		bgOverlay.y = 520;
+		bgOverlay.velocity.x = 30;
+
+		// do da sexy bg thing
+		bg = new FlxSprite(0,0);
+		add(bg);
+
+		handleBackgroundGroups();
+
+		// do da sexy underlay thing
+		selectorunderlay = new FlxSprite().makeGraphic(320, 720, 0xFF101010);
+		add(selectorunderlay);
+
+		// do da sexy text thing
+		var modSelectText:FlxText = new FlxText(0,0,320, "MOD SELECT", 56);
+		modSelectText.setFormat('DS-Digital', 36, 0xFFFFFFFF, 'center');
+		add(modSelectText);
+
+		// do the sexy fps counter removal thing
+		Main.fpsCounter.alpha = 0;
+		Main.memoryCounter.alpha = 0;
+
+		handSprite = new FlxSprite(340,0).loadGraphic(Paths.image('modloader-hand'));
+		handSprite.scale.set(2,2);
+		add(handSprite);
+		handSprite.flipX = true;
+
+		logo = new FlxSprite(767,219).loadGraphic(Paths.image('base-game-logo'));
+		add(logo);
+		logo.screenCenter();
+		logo.x += 160;
+		logo.y -= 40;
+
+		titleText = new FlxText(320,370,1280 - 320, "Friday Night Funkin", 64);
+		titleText.setFormat('VCR OSD Mono', 64, 0xFFFFFFFF, 'center');
+		add(titleText);
+		titleText.setBorderStyle(leftWatermarkText.borderStyle, 0xFF000000, 4);
+
+		disclaimerText = new FlxText(320,720 - 22,0, "Friday Night Funkin", 18);
+		disclaimerText.setFormat('VCR OSD Mono', 18, 0xFFFFFFFF, 'left');
+		disclaimerText.setBorderStyle(leftWatermarkText.borderStyle, 0xFF000000, 1);
+		add(disclaimerText);
+
+		descriptionTextBG = new FlxSprite(0,0).makeGraphic(1,1, 0xFF000000);
+    descriptionTextBG.alpha = 0.6;
+    add(descriptionTextBG);
+
+		descriptionText = new FlxText(360,540,1280 - 400, "Friday Night Funkin", 18);
+		descriptionText.text = "Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...";
+		descriptionText.setFormat('VCR OSD Mono', 18, 0xFFFFFFFF, 'center');
+		add(descriptionText);
+		updateTextBG();
+		handleBinds();
+	}
+
+	public function updateTextBG() {
+		descriptionTextBG.setGraphicSize(Math.floor(descriptionText.fieldWidth + descriptionText.size/2), Math.floor(descriptionText.height + descriptionText.size/2));
+		descriptionTextBG.updateHitbox();
+	}
+
+	public function handleBackgroundGroups() {
+		for (bind in binds) {
+			var bgGroup:FlxTypedSpriteGroup = new FlxTypedSpriteGroup(0,0);
+			add(bgGroup);
+			mods_bg.push(bgGroup);
+			bind.bg_group(bgGroup);
+		}
+	}
+
+	public function handleBinds() {
+		for (bind in binds) {
+			var modRenderer:FlxTypedSpriteGroup = new FlxTypedSpriteGroup(8,0);
+			add(modRenderer);
+			mods_rendered.push(modRenderer);
+			var bindColor = bind.color;
+			var backgroundColor:FlxSprite = new FlxSprite(0,0).makeGraphic(312, 48, bindColor);
+			modRenderer.add(backgroundColor);
+			var modText:FlxText = new FlxText(2,0,0, bind.name, 16);
+			modText.setFormat('VCR OSD Mono', 24, 0xFFFFFFFF, 'left');
+			modRenderer.add(modText);
+			var modTextAuthor:FlxText = new FlxText(4,24,0, 'By: "' + bind.author + '"', 14);
+			modTextAuthor.setFormat('VCR OSD Mono', 14, 0xFFFFFFFF, 'left');
+			modRenderer.add(modTextAuthor);
+			var modIcon:FlxSprite = new FlxSprite(312 - 36,48 / 8).loadGraphic(Paths.image(bind.icon));
+			modRenderer.add(modIcon);
+			intendedYs.push(0);
+		}
+		handleBindRender();
+		updateSelection(0);
+	}
+
+	function handleBindRender(e) {
+		for (i in 0...mods_rendered.length) {
+			var modTitle = mods_rendered[i];
+			intendedYs[i] = (52 * i) + 58;
+			modTitle.y = FlxMath.lerp(modTitle.y, intendedYs[i], 0.4 - e);
+			modTitle.color = (i != cur_select) ? 0xFFAFAFAF : 0xFFFFFFFF;
+		}
+		descriptionTextBG.y = descriptionText.y - (descriptionText.size/4);
+		descriptionTextBG.x = descriptionText.x - (descriptionText.size/4);
+		descriptionTextBG.alpha = descriptionText.alpha * 0.6;
+		descriptionText.visible = descriptionTextBG.visible = (descriptionText.text != '');
+	}
+
+	public function update(e) {
+		super.update(e);
+		handleBindRender(e);
+		if (PlayerSettings.player1.controls.UI_DOWN_P && canMove)
+			updateSelection(1);
+		else if (PlayerSettings.player1.controls.UI_UP_P && canMove)
+			updateSelection(-1);
+		else if (PlayerSettings.player1.controls.ACCEPT && canMove) {
+			FunkinSound.playOnce(Paths.sound("confirmMenu"), 0.75);
+			canMove = false;
+			FlxG.camera.flash(0xFFFFFFFF, 0.2);
+			var version = ModuleHandler.getModule("InitBootStrap").scriptGet("version");
+			var blackSprite = new FlxSprite(0,0).makeGraphic(1280,720,0xFF000000);
+			add(blackSprite);
+			var crazyText = new FlxText(4, 720 - 22, 0, "Press TAB to return to the ModBootstrap v" + version + ' menu.', 16);
+			crazyText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
+			add(crazyText);
+			crazyText.scrollFactor.set();
+			new FlxTimer().start(1.3, () -> {
+				FlxG.switchState(ScriptedMusicBeatState.init(binds[cur_select].target));
+				Main.fpsCounter.alpha = 1;
+				Main.memoryCounter.alpha = 1;
+			});
+		}
+
+		intendedHandY = mods_rendered[cur_select].y + 16;
+		handSprite.y = FlxMath.lerp(handSprite.y, intendedHandY, 0.4 - e);
+	}
+	public function updateSelection(increment:Int) {
+		if (increment != 0)
+			FunkinSound.playOnce(Paths.sound("scrollMenu"), 0.75);
+		cur_select = FlxMath.wrap(cur_select+increment, 0, mods_rendered.length - 1);
+
+		// Animation shit.
+		var logothing = binds[cur_select].logo;
+		if (titleTween != null)
+			titleTween.cancel();
+		if (bgTween != null)
+			bgTween.cancel();
+		if (bggTween != null)
+			bggTween.cancel();
+		if (descTween != null)
+			descTween.cancel();
+		if (logothing == '') {
+			logo.visible = false;
+			titleText.visible = true;
+			titleText.y = 350;
+			titleText.alpha = 0;
+			titleTween = FlxTween.tween(titleText, {y: titleText.y + 20, alpha: 1}, 0.2, {ease: FlxEase.quadOut});
+			titleText.text = binds[cur_select].name;
+		} else {
+			logo.loadGraphic(Paths.image(logo));
+			logo.visible = true;
+			titleText.visible = false;
+			logo.screenCenter();
+			logo.x += 140;
+			logo.y += -60;
+			logo.alpha = 0;
+			titleTween = FlxTween.tween(logo, {y: logo.y + 20, alpha: 1}, 0.2, {ease: FlxEase.quadOut});
+		}
+		if (binds[cur_select].bg != '') {
+			bg.visible = true;
+			bg.x = 40;
+			bg.alpha = 0;
+			bg.loadGraphic(Paths.image(binds[cur_select].bg));
+			bgTween = FlxTween.tween(bg, {x: bg.x - 40, alpha: 1}, 0.2, {ease: FlxEase.quadOut});
+		} else {
+			bg.visible = false;
+		}
+
+		for (i in 0...mods_bg.length) {
+			mods_bg[i].visible = (i == cur_select);
+		}
+		mods_bg[cur_select].x = 40;
+		mods_bg[cur_select].alpha = 0;
+		bggTween = FlxTween.tween(mods_bg[cur_select], {x: mods_bg[cur_select].x - 40, alpha: 1}, 0.2, {ease: FlxEase.quadOut});
+
+		disclaimerText.text = binds[cur_select].disclaimer;
+		descriptionText.alpha = 0;
+		descriptionText.text = binds[cur_select].description;
+		descriptionText.y = 520;
+		descTween = FlxTween.tween(descriptionText, {y: descriptionText.y + 20, alpha: 1}, 0.2, {ease: FlxEase.quadOut});
+		updateTextBG();
+	}
+}

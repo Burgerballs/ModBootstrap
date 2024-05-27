@@ -1,0 +1,10 @@
+{
+  "title": "ModBootstrap",
+  "description": "Basic mod bootstrap. Used for loading mods with special things in them, like menus.",
+  "contributors": [{
+    "name": "Burgerballs"
+  }],
+  "api_version": "0.1.0",
+  "mod_version": "1.0.0",
+  "license": "Apache-2.0"
+}
