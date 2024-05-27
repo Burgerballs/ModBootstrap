@@ -2,6 +2,8 @@
  Basic mod loader for Friday Night Funkin'
 ![image](https://github.com/Burgerballs/ModBootstrap/assets/107233412/2323253b-c726-4504-be14-1ca1bcfad314)
 
+> [!WARNING]
+> This is not compatible with Cyn's ModLauncher, you have to choose one or the other.
 
 In order to make your mod compatible you will need to add this somewhere in your _polymod_meta.json
 
