@@ -48,7 +48,7 @@ class InitBootstrap extends Module {
 
   public function onStateChangeEnd(event:StateChangeScriptEvent):Void {
 		currentState = event.targetState;
-		if (Std.isOfType(currentState, TitleState) && !initialized && load_menu_on_boot) {
+		if (Std.isOfType(currentState, TitleState) && !initialized && Save.instance.modOptions.get("ModBootstrap").load_menu_on_boot) {
 			FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
 			initialized = true;
 		}
