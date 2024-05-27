@@ -44,3 +44,5 @@ class ExampleModBind extends Module {
   }
 }
 ```
+
+If you need to check if the current mod being played is your's, use ``Save.instance.modOptions.get("ModBootstrap").selected_mod``.
