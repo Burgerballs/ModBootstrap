@@ -46,3 +46,11 @@ class ExampleModBind extends Module {
 ```
 
 If you need to check if the current mod being played is your's, use ``Save.instance.modOptions.get("ModBootstrap").selected_mod``.
+
+Make sure to also add some stuff to your title screen to allow the player to go back to the bootstrap menu by pressing TAB, like so:
+```hx
+if (FlxG.keys.justPressed.TAB) {
+ FlxG.sound.music.stop();
+ FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
+}
+```
