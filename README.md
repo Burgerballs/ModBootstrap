@@ -1,5 +1,7 @@
 # ModBootstrap
  Basic mod loader for Friday Night Funkin'
+![image](https://github.com/Burgerballs/ModBootstrap/assets/107233412/2323253b-c726-4504-be14-1ca1bcfad314)
+
 
 In order to make your mod compatible you will need to add this somewhere in your _polymod_meta.json
 ``` json
