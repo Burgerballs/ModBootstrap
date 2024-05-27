@@ -181,6 +181,8 @@ class BootStrapState extends ScriptedMusicBeatState {
 			add(crazyText);
 			crazyText.scrollFactor.set();
 			new FlxTimer().start(1.3, () -> {
+				Save.instance.modOptions.get("ModBootstrap").selected_mod = binds[cur_select].name;
+				Save.instance.flush();
 				FlxG.switchState(ScriptedMusicBeatState.init(binds[cur_select].target));
 				Main.fpsCounter.alpha = 1;
 				Main.memoryCounter.alpha = 1;

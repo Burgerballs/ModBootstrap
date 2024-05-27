@@ -38,7 +38,7 @@ class InitBootstrap extends Module {
 
     if (Save.instance.modOptions.get("ModBootstrap") == null) {
 			Save.instance.modOptions.set("ModBootstrap", {
-				current_mod: "", // Current mod, will be the mod that will load up on boot if load_menu_on_boot is disabled.
+				current_mod: "Friday Night Funkin'", // Current mod, will be the mod that will load up on boot if load_menu_on_boot is disabled.
         load_menu_on_boot: true // wether or not to load the menu before the title screen shows up. otherwise it will allow you to press tab in TitleState to bootstrap instead
 			});
 		}
@@ -61,19 +61,5 @@ class InitBootstrap extends Module {
 				FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
 			}
 		}
-	}
-	public function onDestroy(event:ScriptEvent):Void {
-		if (Save.instance.modOptions.get("ModBootstrap").selected_mod == "none") {
-			Save.instance.modOptions.get("ModBootstrap").selected_mod = "";
-		}
-		Save.instance.flush();
-		if (WindowUtil.windowExit.has(exit)) {
-			WindowUtil.windowExit.remove(exit);
-		}
-	}
-
-	public function exit(_):Void {
-		Save.instance.modOptions.get("ModBootstrap").selected_mod = "";
-		Save.instance.flush();
 	}
 }
