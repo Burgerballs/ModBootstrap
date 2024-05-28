@@ -138,6 +138,10 @@ class BootStrapState extends ScriptedMusicBeatState {
 			var modText:FlxText = new FlxText(2,0,0, bind.name, 16);
 			modText.setFormat('VCR OSD Mono', 24, 0xFFFFFFFF, 'left');
 			modRenderer.add(modText);
+			if (modText.fieldWidth >= 260) {
+				modText.scale.x = 260 / modText.fieldWidth;
+				modText.updateHitbox();
+			}
 			var modTextAuthor:FlxText = new FlxText(4,24,0, 'By: "' + bind.author + '"', 14);
 			modTextAuthor.setFormat('VCR OSD Mono', 14, 0xFFFFFFFF, 'left');
 			modRenderer.add(modTextAuthor);
