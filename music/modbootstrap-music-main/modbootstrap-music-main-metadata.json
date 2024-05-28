@@ -1,0 +1,9 @@
+{
+  "timeFormat": "ms",
+  "artist": "Burgerballs",
+  "songName": "Menu Theme (Main Arrangement)",
+  "timeChanges": [{ "d": 4, "n": 4, "t": 0, "bt": [4, 4, 4, 4], "bpm": 114}],
+  "generatedBy": "Manual (by Burgerballs)",
+  "looped": true,
+  "version": "2.0.0"
+}

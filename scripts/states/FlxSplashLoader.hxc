@@ -1,0 +1,23 @@
+import flixel.FlxG;
+import flixel.system.FlxSplash;
+import funkin.save.Save;
+import funkin.Paths;
+import funkin.modding.base.ScriptedMusicBeatState;
+import funkin.ui.title.TitleState;
+
+class FlxSplashLoader extends ScriptedMusicBeatState {
+  var settings:Dynamic;
+	public function new() {
+		super();
+	}
+
+	public function create():Void {
+		super.create();
+    settings = Save.instance.modOptions.get("ModBootstrapv2");
+    if (settings.load_menu_on_boot) {
+      FlxG.switchState(new FlxSplash(ScriptedMusicBeatState.init("BootStrapState")));
+    } else {
+      FlxG.switchState(new FlxSplash(new TitleState()));
+    }
+	}
+}
