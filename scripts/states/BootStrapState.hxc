@@ -215,7 +215,7 @@ class BootStrapState extends ScriptedMusicBeatState {
 			titleTween = FlxTween.tween(titleText, {y: titleText.y + 20, alpha: 1}, 0.2, {ease: FlxEase.quadOut});
 			titleText.text = binds[cur_select].name;
 		} else {
-			logo.loadGraphic(Paths.image(logo));
+			logo.loadGraphic(Paths.image(logothing));
 			logo.visible = true;
 			titleText.visible = false;
 			logo.screenCenter();
