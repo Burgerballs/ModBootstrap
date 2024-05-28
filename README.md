@@ -44,7 +44,7 @@ If you need to check if the current mod being played is your's, use ``Save.insta
 
 Make sure to also add some stuff to your title screen to allow the player to go back to the bootstrap menu by pressing TAB, like so:
 ```hx
-if (FlxG.keys.justPressed.TAB) {
+if (FlxG.keys.justPressed.TAB && (launcher = ModuleHandler.getModule("BootStrapBinds")) != null) {
  FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
 }
 ```
