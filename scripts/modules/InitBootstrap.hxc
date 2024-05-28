@@ -15,7 +15,7 @@ class InitBootstrap extends Module {
 
 	var initialized:Bool = false;
 	var currentState:Dynamic;
-	var version:String = '0.1.0';
+	var version:String = '0.1.1';
 	public function new() {
       super("InitBootStrap", -1000);
   }
