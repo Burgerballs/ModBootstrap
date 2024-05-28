@@ -40,7 +40,7 @@ class ExampleModBind extends Module { // Replace the class name with a unique na
 }
 ```
 
-If you need to check if the current mod being played is your's, use ``Save.instance.modOptions.get("ModBootstrap").selected_mod``.
+If you need to check if the current mod being played is your's, use ``Save.instance.modOptions.get("ModBootstrapV2").selected_mod``.
 
 Make sure to also add some stuff to your title screen to allow the player to go back to the bootstrap menu by pressing TAB, like so:
 ```hx
