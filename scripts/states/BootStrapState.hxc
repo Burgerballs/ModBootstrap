@@ -226,7 +226,9 @@ class BootStrapState extends ScriptedMusicBeatState {
 		} else if (FlxG.keys.justPressed.TAB && canMove) {
 			// openSubState(ScriptedMusicBeatState.init('BootStrapSettingsSubState'));
 			// change of plans cuz substates hate me
-			ModuleHandler.getModule("AdaptiveMusicController").scriptCall("play", ['modbootstrap-music-settings']);
+			if(settings.play_music) {
+				ModuleHandler.getModule("AdaptiveMusicController").scriptCall("play", ['modbootstrap-music-settings']);
+			}
 			FlxG.switchState(new OptionsState());
 			ModuleHandler.getModule("OptionsInjectorBootStrap").scriptSet("fromBootStrapMenu", true); // do it after in order to prevent infinite loop
 		}
