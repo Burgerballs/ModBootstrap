@@ -2,9 +2,8 @@
  Basic mod loader for Friday Night Funkin'
 ![image](https://github.com/Burgerballs/ModBootstrap/assets/107233412/2323253b-c726-4504-be14-1ca1bcfad314)
 
-> [!WARNING]
-> This is not compatible with Cyn's ModLauncher.
-> If you wish to make your mod compatible with both, check [here](https://github.com/cyn0x8/ModLauncher?tab=readme-ov-file#compatibility).
+> [!TIP]
+> If you wish to make your mod compatible with both Cyn's ModLauncher and ModBootstrap, check [here](https://github.com/cyn0x8/ModLauncher?tab=readme-ov-file#compatibility).
 
 In order to make your mod compatible with ModBootstrap, add a .hxc script with a unique sounding name of your choice.
 
