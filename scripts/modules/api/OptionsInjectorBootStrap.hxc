@@ -1,77 +1,94 @@
-import funkin.modding.module.Module;
-import funkin.save.Save;
 import Std;
-import funkin.ui.options.OptionsState;
-import funkin.ui.mainmenu.MainMenuState;
-import funkin.ui.options.PageName;
-import flixel.util.FlxSave;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import funkin.modding.base.ScriptedMusicBeatState;
 import flixel.FlxG;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxSave;
+import funkin.modding.base.ScriptedMusicBeatState;
+import funkin.modding.module.Module;
+import funkin.modding.module.ModuleHandler;
 import funkin.play.PlayState;
+import funkin.save.Save;
+import funkin.ui.mainmenu.MainMenuState;
+import funkin.ui.options.OptionsState;
+import funkin.ui.options.PageName;
 import funkin.ui.options.PreferencesMenu;
 import polymod.fs.SysFileSystem;
-import flixel.text.FlxText;
-import funkin.modding.module.ModuleHandler;
 
 class OptionsInjectorBootStrap extends Module
 {
-  // Modified version of NebulaZorua's optionsinjection script
-  public var fromBootStrapMenu:Bool = false;
-  public var songTime:Float = 0.0; // this is so the thing doesn't break
-  function new(){
-    super("OptionsInjectorBootStrap", -100);
-  }
-  override function onStateChangeEnd(event){
-    super.onStateChangeEnd(event);
-    inOptions = false;
-    if(Std.isOfType(event.targetState, OptionsState)){
-      var prefs = event.targetState.pages.get(PageName.Preferences);
-      inOptions = true;
-      var state = event.targetState;
-      var options = event.targetState.pages.get(PageName.Options);
-      var exit = options.items.members[options.items.length - 1];
-      exit.y += 100;
-      options.items.remove(exit);
+	// Modified version of NebulaZorua's optionsinjection script
+	public var fromBootStrapMenu:Bool = false;
+	public var songTime:Float = 0.0; // this is so the thing doesn't break
 
-      var item = options.items.createItem(0, exit.y - 100, "Mod Bootstrap", "bold", function(){
-        options.onSwitch.dispatch(PageName.Colors);
-      });
-      item.x = (FlxG.width - item.width) / 2;
-      options.items.add(exit);
+	function new()
+	{
+		super("OptionsInjectorBootStrap", -100);
+	}
 
-      var leech = event.targetState.addPage(PageName.Colors, new PreferencesMenu());
-      leech.onExit.add(function(){
-        state.switchPage(PageName.Options);
-      });
-      for(shit in leech.items){
-        shit.destroy();
-      }
-      for(shit in leech.preferenceItems){
-        shit.destroy();
-      }
-      leech.items.clear();
-      leech.preferenceItems.clear();
-
-      // basic options API
-      var options = ModuleHandler.getModule("InitBootStrap").scriptGet("options");
-      for (i in options) {
-        leech.createPrefItemCheckbox(i.name, i.description, function(value){
-          i.action(value);
-        }, i.variableToChange);
-      }
-    } else if(fromBootStrapMenu && !Std.isOfType(event.targetState, OptionsState))
+	override function onStateChangeEnd(event)
+	{
+		super.onStateChangeEnd(event);
+		inOptions = false;
+		if (Std.isOfType(event.targetState, OptionsState))
 		{
-      FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
-      fromBootStrapMenu = false;
-		} else if (Std.isOfType(event.targetState, ScriptedMusicBeatState)) {
-      ModuleHandler.getModule("AdaptiveMusicController").scriptSet("stopRecordingPlaytime", false);
-    }
-  }
-  override function onStateChangeStart(event) {
-    if(fromBootStrapMenu && Std.isOfType(event.targetState, MainMenuState)) {
-      ModuleHandler.getModule("AdaptiveMusicController").scriptSet("stopRecordingPlaytime", true);
-    }
-  }
+			var prefs = event.targetState.pages.get(PageName.Preferences);
+			inOptions = true;
+			var state = event.targetState;
+			var options = event.targetState.pages.get(PageName.Options);
+			var exit = options.items.members[options.items.length - 1];
+			exit.y += 100;
+			options.items.remove(exit);
+
+			var item = options.items.createItem(0, exit.y - 100, "Mod Bootstrap", "bold", function()
+			{
+				options.onSwitch.dispatch(PageName.Colors);
+			});
+			item.x = (FlxG.width - item.width) / 2;
+			options.items.add(exit);
+
+			var leech = event.targetState.addPage(PageName.Colors, new PreferencesMenu());
+			leech.onExit.add(function()
+			{
+				state.switchPage(PageName.Options);
+			});
+			for (shit in leech.items)
+			{
+				shit.destroy();
+			}
+			for (shit in leech.preferenceItems)
+			{
+				shit.destroy();
+			}
+			leech.items.clear();
+			leech.preferenceItems.clear();
+
+			// basic options API
+			var options = ModuleHandler.getModule("InitBootStrap").scriptGet("options");
+			for (i in options)
+			{
+				leech.createPrefItemCheckbox(i.name, i.description, function(value)
+				{
+					i.action(value);
+				}, i.variableToChange);
+			}
+		}
+		else if (fromBootStrapMenu && !Std.isOfType(event.targetState, OptionsState))
+		{
+			FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
+			fromBootStrapMenu = false;
+		}
+		else if (Std.isOfType(event.targetState, ScriptedMusicBeatState))
+		{
+			ModuleHandler.getModule("AdaptiveMusicController").scriptSet("stopRecordingPlaytime", false);
+		}
+	}
+
+	override function onStateChangeStart(event)
+	{
+		if (fromBootStrapMenu && Std.isOfType(event.targetState, MainMenuState))
+		{
+			ModuleHandler.getModule("AdaptiveMusicController").scriptSet("stopRecordingPlaytime", true);
+		}
+	}
 }

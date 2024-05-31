@@ -1,40 +1,45 @@
 import funkin.modding.module.Module;
 
-typedef Bind = {
+typedef Bind =
+{
 	// to pass into the `bind` function
 	name:String, // name of your mod, `Save.instance.modOptions.get("ModBootstrap").selected_mod` will use this.
 	target:String, // target `ScriptedMusicBeatState` class name to open after `on_init`
 	bg:String, // path to the mod bg, if it is null, it will be set to the default.
-  icon:String, // path to the mod icon, if it is null, it will be set to the default. Advisable to be 32x32.
-  description:String, // Description of the mod.
-  logo:String, // path to the mod logo, used for the title in the middle, if null, it's replaced with a name.
-  author:String, // name of the ones who made the mod.
+	icon:String, // path to the mod icon, if it is null, it will be set to the default. Advisable to be 32x32.
+	description:String, // Description of the mod.
+	logo:String, // path to the mod logo, used for the title in the middle, if null, it's replaced with a name.
+	author:String, // name of the ones who made the mod.
 	color:Int,
 	disclaimer:String,
-	bg_group:Null<(Dynamic)->Void>
+	bg_group:Null<(Dynamic) -> Void>
 }
 
-class BootStrapBinds extends Module {
-	public function new() {
+class BootStrapBinds extends Module
+{
+	public function new()
+	{
 		super("BootStrapBinds", -100);
 	}
 
-	public function onCreate(event:ScriptEvent):Void {
+	public function onCreate(event:ScriptEvent):Void
+	{
 		this.active = false;
 	}
 
 	public var binds:Array<Dynamic> = [];
 
-	public function bind(data:Dynamic):Void {
+	public function bind(data:Dynamic):Void
+	{
 		binds.push({
-			name:       data.name,
+			name: data.name,
 			description: data.description,
-			target:     data.target,
-			bg:         data.bg,
-      icon:       data.icon,
-      logo:       data.logo,
-      author:     data.author,
-			color:      data.color,
+			target: data.target,
+			bg: data.bg,
+			icon: data.icon,
+			logo: data.logo,
+			author: data.author,
+			color: data.color,
 			disclaimer: data.disclaimer,
 			bg_group: data.bg_group
 		});

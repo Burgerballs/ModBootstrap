@@ -1,36 +1,43 @@
-import funkin.modding.module.Module;
-import flixel.FlxG;
-import funkin.modding.module.ModuleHandler;
-import funkin.audio.FunkinSound;
 import StringTools;
+import flixel.FlxG;
 import flixel.sound.FlxSoundGroup;
+import funkin.audio.FunkinSound;
+import funkin.modding.module.Module;
+import funkin.modding.module.ModuleHandler;
 
-class AdaptiveMusicController extends Module {
-    var playTime:Float = 0;
-    var stopRecordingPlaytime:Bool = false;
-    public function new() {
-        super("AdaptiveMusicController", 23);
-    }
+class AdaptiveMusicController extends Module
+{
+	var playTime:Float = 0;
+	var stopRecordingPlaytime:Bool = false;
 
-    public function play(name) {
-        if (FlxG.sound.music != null && !stopRecordingPlaytime) {
-            playTime = FlxG.sound.music.time;
-        }
-        FunkinSound.playMusic(name,
-            {
-            startingVolume: 0.7,
-            overrideExisting: true,
-            restartTrack: false,
-            loop: true
-        });
-        FlxG.sound.music.pause();
-        FlxG.sound.music.time = playTime;
-        FlxG.sound.music.resume();
-    }
-    public function onUpdate(e) {
-        if (FlxG.sound.music != null && !stopRecordingPlaytime) {
-            playTime = FlxG.sound.music.time;
-        }
-        super.onUpdate(e);
-    }
+	public function new()
+	{
+		super("AdaptiveMusicController", 23);
+	}
+
+	public function play(name)
+	{
+		if (FlxG.sound.music != null && !stopRecordingPlaytime)
+		{
+			playTime = FlxG.sound.music.time;
+		}
+		FunkinSound.playMusic(name, {
+			startingVolume: 0.7,
+			overrideExisting: true,
+			restartTrack: false,
+			loop: true
+		});
+		FlxG.sound.music.pause();
+		FlxG.sound.music.time = playTime;
+		FlxG.sound.music.resume();
+	}
+
+	public function onUpdate(e)
+	{
+		if (FlxG.sound.music != null && !stopRecordingPlaytime)
+		{
+			playTime = FlxG.sound.music.time;
+		}
+		super.onUpdate(e);
+	}
 }
