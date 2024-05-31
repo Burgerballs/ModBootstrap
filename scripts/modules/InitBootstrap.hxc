@@ -71,8 +71,6 @@ class InitBootstrap extends Module {
 			settings.haxeflixel_splash = false;
 
 		addOptions();
-
-		//for (i in 0...10) {
 		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
 			name: "Friday Night Funkin'",
 			description: "Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...",
@@ -87,7 +85,6 @@ class InitBootstrap extends Module {
 			},
 			disclaimer: "This loads the vanilla game, mods that don't require this bootstrap will load as well."
 		}]);
-		//} // used for testing, dont uncomment
   }
 
   public function onStateChangeEnd(event:StateChangeScriptEvent):Void {
@@ -100,7 +97,7 @@ class InitBootstrap extends Module {
 			}
 			initialized = true;
 		} else if (Std.isOfType(currentState, TitleState) && initialized) {
-			var crazyText = new FlxText(4, 720 - 22, 0, "Press TAB enter the ModBootstrap v" + version + ' menu.', 16);
+			var crazyText = new FlxText(4, 720 - 22, 0, "Press F8 to enter the ModBootstrap v" + version + ' menu at any time.', 16);
 			crazyText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
 			new FlxTimer().start(1.4, () -> {
 				currentState.add(crazyText);
@@ -111,11 +108,11 @@ class InitBootstrap extends Module {
 	}
 
 	public function onUpdate(e) {
-		if (Std.isOfType(currentState, TitleState)) {
-			if (FlxG.keys.justPressed.TAB) {
+		if (FlxG.keys.justPressed.F8) {
+			if (FlxG.sound.music != null)
+				FlxG.sound.music.time = 0;
 				FlxG.sound.music.stop();
-				FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
-			}
+			FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
 		}
 	}
 	function addOptions() {

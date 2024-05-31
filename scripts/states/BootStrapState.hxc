@@ -17,6 +17,7 @@ import funkin.audio.FunkinSound;
 import funkin.modding.base.ScriptedMusicBeatState;
 import funkin.modding.module.ModuleHandler;
 import funkin.save.Save;
+import funkin.ui.freeplay.CapsuleText;
 
 class BootStrapState extends ScriptedMusicBeatState {
 	var binds:Array<Dynamic>;
@@ -91,6 +92,7 @@ class BootStrapState extends ScriptedMusicBeatState {
 		handSprite.scale.set(2,2);
 		add(handSprite);
 		handSprite.flipX = true;
+		handSprite.antialiasing = false;
 
 		logo = new FlxSprite(767,219).loadGraphic(Paths.image('base-game-logo'));
 		add(logo);
@@ -120,15 +122,14 @@ class BootStrapState extends ScriptedMusicBeatState {
 		handleBinds();
 
 
-		var modSelectTextBG = new FlxSprite(0,0).makeGraphic(320, 42, 0xFF000000);
-    modSelectTextBG.alpha = 0.6;
+		var modSelectTextBG = new FlxSprite(0,0).makeGraphic(320, 56, 0xFF101010);
     add(modSelectTextBG);
 		// do da sexy text thing
-		var modSelectText:FlxText = new FlxText(0,0,320, "MOD SELECT", 56);
-		modSelectText.setFormat('DS-Digital', 36, 0xFFFFFFFF, 'center');
+		var modSelectText:CapsuleText = new CapsuleText(60,10, "MOD SELECT", 56);
+		modSelectText.whiteText.setFormat('5by7', 36, 0xFFFFFFFF, 'center');
+		modSelectText.blurredText.setFormat('5by7', 36, 0xFF00ccff, 'center');
 		add(modSelectText);
-		var tooltipTextBG = new FlxSprite(0,720 - 48).makeGraphic(320, 48, 0xFF000000);
-    tooltipTextBG.alpha = 0.6;
+		var tooltipTextBG = new FlxSprite(0,720 - 48).makeGraphic(320, 48, 0xFF101010);
     add(tooltipTextBG);
 		// do da sexy text thing
 		var tooltipText:FlxText = new FlxText(8,720 - 46,320, "Press UP/DOWN to navigate.\nPress ACCEPT to enter.\nPress TAB to enter options.", 16);
@@ -177,18 +178,20 @@ class BootStrapState extends ScriptedMusicBeatState {
 			intendedYs.push(0);
 			columnHeight += optionHeight + 4;
 		}
-		columnHeight += 58;
+		columnHeight += 104;
 		handleBindRender();
 		updateSelection(0);
 	}
 
 	function handleBindRender(e) {
+		var diffMult = 48 / optionHeight;
+		var scrollY = 0;
+		if (cur_select >= 4)
+			FlxMath.bound(cur_select - 4, 0, (mods_rendered.length - 4) - (8.0 * diffMult));
+
 		for (i in 0...mods_rendered.length) {
 			var modTitle = mods_rendered[i];
-			intendedYs[i] = ((optionHeight + 4) * i) + 58;
-			if (columnHeight >= 720) {
-				intendedYs[i] += (720 - (columnHeight + 58)) * ((((720 / mods_rendered.length) * cur_select) + optionHeight + 4) / columnHeight);
-			}
+			intendedYs[i] = ((optionHeight + 4) * (i-scrollY)) + 58;
 			modTitle.y = FlxMath.lerp(modTitle.y, intendedYs[i], 0.2 - e);
 			modTitle.color = (i != cur_select) ? 0xFFAFAFAF : 0xFFFFFFFF;
 		}
@@ -211,7 +214,7 @@ class BootStrapState extends ScriptedMusicBeatState {
 			var version = ModuleHandler.getModule("InitBootStrap").scriptGet("version");
 			var blackSprite = new FlxSprite(0,0).makeGraphic(1280,720,0xFF000000);
 			add(blackSprite);
-			var crazyText = new FlxText(4, 720 - 22, 0, "Press TAB to return to the ModBootstrap v" + version + ' menu.', 16);
+			var crazyText = new FlxText(4, 720 - 22, 0, "Press F8 to return to the ModBootstrap v" + version + ' menu at any time.', 16);
 			crazyText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
 			add(crazyText);
 			FlxG.sound.music.stop();
@@ -240,7 +243,6 @@ class BootStrapState extends ScriptedMusicBeatState {
 		if (increment != 0)
 			FunkinSound.playOnce(Paths.sound("scrollMenu"), 0.75);
 		cur_select = FlxMath.wrap(cur_select+increment, 0, mods_rendered.length - 1);
-
 		// Animation shit.
 		var logothing = binds[cur_select].logo;
 		if (titleTween != null)
