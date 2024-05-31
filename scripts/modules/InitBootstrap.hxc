@@ -1,21 +1,19 @@
 import flixel.FlxG;
-
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 import funkin.Preferences;
-
 import funkin.modding.base.ScriptedMusicBeatState;
 import funkin.modding.module.Module;
-import flixel.tweens.FlxTween;
+import funkin.modding.module.ModuleHandler;
 import funkin.save.Save;
 import funkin.ui.title.TitleState;
 import funkin.util.ReflectUtil;
 import funkin.util.WindowUtil;
-import flixel.util.FlxTimer;
-import flixel.tweens.FlxEase;
-import flixel.text.FlxText;
-import funkin.modding.module.ModuleHandler;
 
-class InitBootstrap extends Module {
-
+class InitBootstrap extends Module
+{
 	var initialized:Bool = false;
 	var currentState:Dynamic;
 	var version:String = '0.2.0';
@@ -28,33 +26,39 @@ class InitBootstrap extends Module {
 		haxeflixel_splash: false
 	}
 
-	public function new() {
-      super("InitBootStrap", -1000);
-  }
+	public function new()
+	{
+		super("InitBootStrap", -1000);
+	}
 
-	public function addOption(data:Dynamic) {
+	public function addOption(data:Dynamic)
+	{
 		options.push(data);
 	}
 
-	function refreshSettings() {
+	function refreshSettings()
+	{
 		Save.instance.modOptions.set("ModBootstrapv2", settings);
 		Save.instance.flush();
 		options = []; // clean up options array
 		addOptions();
 	}
 
-	function set_current_mod(name) {
+	function set_current_mod(name)
+	{
 		settings.current_mod = name;
 		refreshSettings();
 	}
 
-  public function onCreate(event:ScriptEvent):Void {
+	public function onCreate(event:ScriptEvent):Void
+	{
 		FlxG.mouse.set_visible(false);
 
-    if (Save.instance.modOptions.get("ModBootstrapv2") == null) {
+		if (Save.instance.modOptions.get("ModBootstrapv2") == null)
+		{
 			Save.instance.modOptions.set("ModBootstrapv2", { // v2 bootstrap saves baby!
 				current_mod: "Friday Night Funkin'", // Current mod, will be the mod that will load up on boot if load_menu_on_boot is disabled.
-        load_menu_on_boot: true, // wether or not to load the menu before the title screen shows up. otherwise it will allow you to press tab in TitleState to bootstrap instead
+				load_menu_on_boot: true, // wether or not to load the menu before the title screen shows up. otherwise it will allow you to press tab in TitleState to bootstrap instead
 				play_music: true, // wether or not the menus should be able play music
 				compact_mode: false, // Omits stuff like author and icons to make the tab thingies smaller
 				haxeflixel_splash: false
@@ -71,35 +75,46 @@ class InitBootstrap extends Module {
 			settings.haxeflixel_splash = false;
 
 		addOptions();
-		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
-			name: "Friday Night Funkin'",
-			description: "Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...",
-			target: "BaseTitleState",
-			logo: 'base-game-logo',
-      bg: '',
-      icon: 'fnficon32',
-      author: "The Funkin' Crew",
-			color: 0xFFff2b77,
-			bg_group: (group) -> {
-				return; // do nothing.
-			},
-			disclaimer: "This loads the vanilla game, mods that don't require this bootstrap will load as well."
-		}]);
-  }
+		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [
+			{
+				name: "Friday Night Funkin'",
+				description: "Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...",
+				target: "BaseTitleState",
+				logo: 'base-game-logo',
+				bg: '',
+				icon: 'fnficon32',
+				author: "The Funkin' Crew",
+				color: 0xFFff2b77,
+				bg_group: (group) ->
+				{
+					return; // do nothing.
+				},
+				disclaimer: "This loads the vanilla game, mods that don't require this bootstrap will load as well."
+			}
+		]);
+	}
 
-  public function onStateChangeEnd(event:StateChangeScriptEvent):Void {
+	public function onStateChangeEnd(event:StateChangeScriptEvent):Void
+	{
 		currentState = event.targetState;
-		if (Std.isOfType(currentState, TitleState) && !initialized) {
-			if (settings.haxeflixel_splash) {
+		if (Std.isOfType(currentState, TitleState) && !initialized)
+		{
+			if (settings.haxeflixel_splash)
+			{
 				FlxG.switchState(ScriptedMusicBeatState.init("FlxSplashLoader"));
-			} else if (settings.load_menu_on_boot) {
+			}
+			else if (settings.load_menu_on_boot)
+			{
 				FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
 			}
 			initialized = true;
-		} else if (Std.isOfType(currentState, TitleState) && initialized) {
+		}
+		else if (Std.isOfType(currentState, TitleState) && initialized)
+		{
 			var crazyText = new FlxText(4, 720 - 22, 0, "Press F8 to enter the ModBootstrap v" + version + ' menu at any time.', 16);
 			crazyText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
-			new FlxTimer().start(1.4, () -> {
+			new FlxTimer().start(1.4, () ->
+			{
 				currentState.add(crazyText);
 				crazyText.alpha = 0;
 				FlxTween.tween(crazyText, {alpha: 1}, 0.7, {ease: FlxEase.quadOut});
@@ -107,26 +122,35 @@ class InitBootstrap extends Module {
 		}
 	}
 
-	public function onUpdate(e) {
-		if (FlxG.keys.justPressed.F8) {
+	public function onUpdate(e)
+	{
+		if (FlxG.keys.justPressed.F8)
+		{
 			if (FlxG.sound.music != null)
 				FlxG.sound.music.time = 0;
-				FlxG.sound.music.stop();
+			FlxG.sound.music.stop();
 			FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
 		}
 	}
-	function addOptions() {
+
+	function addOptions()
+	{
 		// my mystical options api
 		addOption({
 			name: "Play Music",
 			description: "Wether or not the menus should play music.",
 			variableToChange: settings.play_music,
-			action: function(val) {
+			action: function(val)
+			{
 				settings.play_music = val;
-				if (ModuleHandler.getModule("OptionsInjectorBootStrap").scriptGet("fromBootStrapMenu")) {
-					if (val) {
+				if (ModuleHandler.getModule("OptionsInjectorBootStrap").scriptGet("fromBootStrapMenu"))
+				{
+					if (val)
+					{
 						ModuleHandler.getModule("AdaptiveMusicController").scriptCall("play", ['modbootstrap-music-settings']);
-					} else {
+					}
+					else
+					{
 						FlxG.sound.music.stop();
 					}
 				}
@@ -137,8 +161,8 @@ class InitBootstrap extends Module {
 			name: "Compact mode",
 			description: "Omits stuff like author and icons to make the tab thingies smaller.",
 			variableToChange: settings.compact_mode,
-			action: function(val) {
-
+			action: function(val)
+			{
 				settings.compact_mode = val;
 				refreshSettings();
 			}
@@ -147,7 +171,8 @@ class InitBootstrap extends Module {
 			name: "Load Menu on Boot",
 			description: "",
 			variableToChange: settings.load_menu_on_boot,
-			action: function(val) {
+			action: function(val)
+			{
 				settings.load_menu_on_boot = val;
 				refreshSettings();
 			}
@@ -156,7 +181,8 @@ class InitBootstrap extends Module {
 			name: "Haxeflixel Splash Screen",
 			description: "",
 			variableToChange: settings.haxeflixel_splash,
-			action: function(val) {
+			action: function(val)
+			{
 				settings.haxeflixel_splash = val;
 				refreshSettings();
 			}
