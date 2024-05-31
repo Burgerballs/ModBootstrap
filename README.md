@@ -40,7 +40,7 @@ class ExampleModBind extends Module { // Replace the class name with a unique na
 ```
 
 > [!WARNING]
-> This code splice will not be needed in the next update.
+> This documentation below is useless in the next update coming soon.
 
 If you need to check if the current mod being played is your's, use ``Save.instance.modOptions.get("ModBootstrapV2").selected_mod``.
 
