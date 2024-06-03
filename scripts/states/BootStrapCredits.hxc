@@ -1,0 +1,98 @@
+import openfl.filters.ShaderFilter;
+
+import flixel.FlxG;
+import flixel.addons.display.FlxBackdrop;
+import flixel.group.FlxTypedSpriteGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.util.FlxTimer;
+import funkin.ui.options.OptionsState;
+import flixel.FlxSprite;
+import Main;
+import funkin.Paths;
+import funkin.PlayerSettings;
+import funkin.audio.FunkinSound;
+import funkin.modding.base.ScriptedMusicBeatState;
+import funkin.modding.module.ModuleHandler;
+import funkin.save.Save;
+import funkin.ui.freeplay.CapsuleText;
+import flixel.graphics.FlxGraphic;
+import openfl.display.BitmapData;
+import openfl.net.FileReference;
+import haxe.Unserializer;
+import haxe.Json;
+import funkin.ui.options.CheckboxPreferenceItem;
+import funkin.util.PlatformUtil;
+import funkin.modding.base.ScriptedFunkinSprite;
+
+import StringTools;
+
+class BootStrapCredits extends ScriptedMusicBeatState {
+	var canMove = true;
+	var bgOverlay:FlxBackdrop;
+	var selectorunderlay:FlxSprite;
+
+
+	public function new() {
+		super();
+		persistentUpdate = true;
+	}
+
+  public function create():Void {
+		super.create();
+		settings = Save.instance.modOptions.get("ModBootstrapv2");
+		// play music!
+		if (settings.play_music) {
+			ModuleHandler.getModule("AdaptiveMusicController").scriptCall("play", ['modbootstrap-music-main']);
+		} else {
+			if (FlxG.sound.music != null)
+				FlxG.sound.music.stop();
+		}
+		// set selected mod to nothin!!!
+    ModuleHandler.getModule("InitBootStrap").scriptCall("set_current_mod", ['']);
+
+    // do da sexy note overlay thing
+		bgOverlay = new FlxBackdrop(null).loadGraphic(Paths.image('modloader-underlay'));
+		add(bgOverlay);
+		bgOverlay.flipY = true;
+		bgOverlay.y = 520;
+		bgOverlay.velocity.x = 30;
+    bgOverlay.velocity.y = 10;
+
+
+		// do da sexy underlay thing
+		selectorunderlay = new FlxSprite(1280*0.2,720*0.2).makeGraphic(1280 * 0.6, 720*0.6, 0xFF101010);
+		add(selectorunderlay);
+
+    var modSelectText:CapsuleText = new CapsuleText(420,720 * 0.2 + 10, "MODBOOTSTRAP CREDITS", 56);
+		modSelectText.whiteText.setFormat('5by7', 36, 0xFFFFFFFF, 'center');
+		modSelectText.blurredText.setFormat('5by7', 36, 0xFF00ccff, 'center');
+		add(modSelectText);
+
+    // spawning burgerballs
+    var credBurgerballs = new FlxSprite(selectorunderlay.x + 20,selectorunderlay.y + 60).loadGraphic(Paths.image('bootstrapcredits/myke'));
+		add(credBurgerballs);
+
+    var credBurgerballsText:FlxText = new FlxText(selectorunderlay.x+ 24,credBurgerballs.y+credBurgerballs.height,320, "Burgerballs\nProgrammer, UI Designer, Composer\n\nFun fact this person ate mud while coding and it improved their productivity!\n\nTwitter: @Burgerballs9\nGamebanana: burgerballs9", 16);
+		credBurgerballsText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
+		add(credBurgerballsText);
+
+    // spawning wife
+    var credPixa = new FlxSprite(selectorunderlay.x +selectorunderlay.width - 20,selectorunderlay.y + 60).loadGraphic(Paths.image('bootstrapcredits/pixa'));
+		add(credPixa);
+    credPixa.x -= credPixa.width; // im sorry but ur a lil out of the box i hope this fixes it!
+
+    var credPixaText:FlxText = new FlxText(selectorunderlay.x + selectorunderlay.width - 24 - 320,credBurgerballs.y+credBurgerballs.height,320, "Pixa\nArtist for a few UI elements\n\nFun fact this person is the love of my life and i cherish every interaction i have with her! (maybe she also eats mud too idk)\n\nTwitter: @pixa_dewie\nGamebanana: pixa", 16);
+		credPixaText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'right');
+		add(credPixaText);
+	}
+
+	public function update(e) {
+		super.update(e);
+		if (FlxG.keys.justPressed.ESCAPE && canMove) {
+      FlxG.switchState(ScriptedMusicBeatState.init('BootStrapState'));
+		}
+	}
+}

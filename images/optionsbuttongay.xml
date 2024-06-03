@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="optionsbuttongay.png">
+  <!-- Generated using Aseprite .json to FNF .xml: https://github.com/Lethrial/Aseprite-.json-to-FNF-.xml -->
+  <SubTexture name="OFF instance 0" x="0" y="0" width="56" height="56"/>
+  <SubTexture name="TURN instance 0" x="56" y="0" width="56" height="56"/>
+  <SubTexture name="TURN instance 1" x="112" y="0" width="56" height="56"/>
+  <SubTexture name="TURN instance 2" x="0" y="56" width="56" height="56"/>
+  <SubTexture name="TURN instance 3" x="56" y="56" width="56" height="56"/>
+</TextureAtlas>

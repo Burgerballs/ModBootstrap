@@ -13,12 +13,14 @@ import flixel.util.FlxTimer;
 import flixel.tweens.FlxEase;
 import flixel.text.FlxText;
 import funkin.modding.module.ModuleHandler;
+import funkin.modding.PolymodHandler;
+import haxe.Unserializer; // eric i need this for save files trust me
 
 class InitBootstrap extends Module {
 
 	var initialized:Bool = false;
 	var currentState:Dynamic;
-	var version:String = '0.2.0';
+	var version:String = '0.3.0';
 	var options:Array<Dynamic> = [];
 	var settings:Dynamic = {
 		current_mod: "Friday Night Funkin'", // Current mod, will be the mod that will load up on boot if load_menu_on_boot is disabled.
@@ -50,6 +52,11 @@ class InitBootstrap extends Module {
 
   public function onCreate(event:ScriptEvent):Void {
 		FlxG.mouse.set_visible(false);
+		// just to check if names and ids are identical
+
+		var fileSystem = Unserializer.DEFAULT_RESOLVER.resolveClass('sys.FileSystem');
+		// make directory for disabled mods if they don't exist.
+		if (!fileSystem.exists('disabledMods/')) fileSystem.createDirectory('disabledMods/');
 
     if (Save.instance.modOptions.get("ModBootstrapv2") == null) {
 			Save.instance.modOptions.set("ModBootstrapv2", { // v2 bootstrap saves baby!
@@ -72,6 +79,20 @@ class InitBootstrap extends Module {
 
 		addOptions();
 		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
+			name: "Manage Mods",
+			description: "Manage mods you have downloaded in your mods folder.",
+			target: "BootStrapManager",
+			logo: '',
+      bg: '',
+      icon: 'modbootstrap-addons-menu-icon32',
+      author: "Burgerballs",
+			color: 0xFF000000,
+			bg_group: (group) -> {
+				return; // do nothing.
+			},
+			disclaimer: "This loads the vanilla game, mods that don't require this bootstrap will load as well."
+		}]);
+		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
 			name: "Friday Night Funkin'",
 			description: "Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...",
 			target: "BaseTitleState",
@@ -87,19 +108,21 @@ class InitBootstrap extends Module {
 		}]);
   }
 
+	var changedState:Bool = false;
   public function onStateChangeEnd(event:StateChangeScriptEvent):Void {
 		currentState = event.targetState;
-		if (Std.isOfType(currentState, TitleState) && !initialized) {
-			if (settings.haxeflixel_splash) {
-				FlxG.switchState(ScriptedMusicBeatState.init("FlxSplashLoader"));
-			} else if (settings.load_menu_on_boot) {
-				FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
+		if (Std.isOfType(currentState, TitleState)) {
+			if (!changedState) {
+				if (settings.haxeflixel_splash) {
+					FlxG.switchState(ScriptedMusicBeatState.init("FlxSplashLoader"));
+				} else if (settings.load_menu_on_boot) {
+					FlxG.switchState(ScriptedMusicBeatState.init("BootStrapState"));
+				}
+				changedState = true;
 			}
-			initialized = true;
-		} else if (Std.isOfType(currentState, TitleState) && initialized) {
 			var crazyText = new FlxText(4, 720 - 22, 0, "Press F8 to enter the ModBootstrap v" + version + ' menu at any time.', 16);
 			crazyText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
-			new FlxTimer().start(1.4, () -> {
+			new FlxTimer().start(2, () -> {
 				currentState.add(crazyText);
 				crazyText.alpha = 0;
 				FlxTween.tween(crazyText, {alpha: 1}, 0.7, {ease: FlxEase.quadOut});

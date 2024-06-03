@@ -1,0 +1,285 @@
+import openfl.filters.ShaderFilter;
+
+import flixel.FlxG;
+import flixel.addons.display.FlxBackdrop;
+import flixel.group.FlxTypedSpriteGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.util.FlxTimer;
+import funkin.ui.options.OptionsState;
+import flixel.FlxSprite;
+import Main;
+import funkin.Paths;
+import funkin.PlayerSettings;
+import funkin.audio.FunkinSound;
+import funkin.modding.base.ScriptedMusicBeatState;
+import funkin.modding.module.ModuleHandler;
+import funkin.save.Save;
+import funkin.ui.freeplay.CapsuleText;
+import flixel.graphics.FlxGraphic;
+import openfl.display.BitmapData;
+import openfl.net.FileReference;
+import haxe.Unserializer;
+import haxe.Json;
+import funkin.ui.options.CheckboxPreferenceItem;
+import funkin.util.PlatformUtil;
+import funkin.modding.base.ScriptedFunkinSprite;
+
+import StringTools;
+
+class BootStrapManager extends ScriptedMusicBeatState {
+	var binds:Array<Dynamic>;
+  var mods_rendered:Array<FlxTypedSpriteGroup> = [];
+  var enabled_mods:Array<String>; // all enabled mods
+  var disabled_mods:Array<String>; // all disabled mods
+  var mods_to_enable:Array<String> = []; //
+  var mods_to_disable:Array<String> = []; // indexes of mods to disable
+  var cur_select:Int = 0; // current selected mod index, float for math reasons.
+	var intendedHandY:Float;
+	var canMove = true;
+	var bgOverlay:FlxBackdrop;
+  var checkBoxes:Array<CheckboxPreferenceItem> = [];
+  var intendedYs:Array<Float> = [];
+	var selectorunderlay:FlxSprite;
+	var settings:Dynamic;
+	var optionHeight:Int = 132;
+  var optionSeparation:Int = 8;
+  var fileSystem:Dynamic;
+  var fileClass:Dynamic;
+  var Reflect:Dynamic;
+  var Process:Dynamic;
+  var Sys:Dynamic;
+  var OpenFlSys:Dynamic;
+
+
+	public function new() {
+		super();
+		persistentUpdate = true;
+	}
+
+  public function create():Void {
+		super.create();
+		settings = Save.instance.modOptions.get("ModBootstrapv2");
+		// play music!
+		if (settings.play_music) {
+			ModuleHandler.getModule("AdaptiveMusicController").scriptCall("play", ['modbootstrap-music-main']);
+		} else {
+			if (FlxG.sound.music != null)
+				FlxG.sound.music.stop();
+		}
+		// set selected mod to nothin!!!
+    ModuleHandler.getModule("InitBootStrap").scriptCall("set_current_mod", ['']);
+
+    // FileSystem workaround!
+    fileSystem = Unserializer.DEFAULT_RESOLVER.resolveClass('sys.FileSystem');
+    fileClass = Unserializer.DEFAULT_RESOLVER.resolveClass('sys.io.File');
+    Reflect = Unserializer.DEFAULT_RESOLVER.resolveClass('Reflect');
+    Process = Unserializer.DEFAULT_RESOLVER.resolveClass('sys.io.Process');
+    Sys = Unserializer.DEFAULT_RESOLVER.resolveClass('Sys');
+    OpenFlSys = Unserializer.DEFAULT_RESOLVER.resolveClass('openfl.system.System');
+
+    // zip mods aren't supported yet.
+    enabled_mods = fileSystem.readDirectory('mods/').filter((r)  -> {
+      return !StringTools.endsWith(r,'.zip') && getModMetadata('mods/'+r).title != 'ModBootstrap';
+    });
+    disabled_mods = fileSystem.readDirectory('disabledMods/').filter((r)  -> {
+      return !StringTools.endsWith(r,'.zip');
+    });
+
+    // do da sexy note overlay thing
+		bgOverlay = new FlxBackdrop(null, 0x01).loadGraphic(Paths.image('modloader-underlay'));
+		add(bgOverlay);
+		bgOverlay.flipY = true;
+		bgOverlay.y = 520;
+		bgOverlay.velocity.x = 30;
+
+		// do da sexy underlay thing
+		selectorunderlay = new FlxSprite(320,0).makeGraphic(640, 720, 0xFF101010);
+		add(selectorunderlay);
+
+    handleMods();
+
+    var modSelectTextBG = new FlxSprite(320,0).makeGraphic(640, 56, 0xFF101010);
+    add(modSelectTextBG);
+		// do da sexy text thing
+		var modSelectText:CapsuleText = new CapsuleText(520,10, "MOD MANAGER", 56);
+		modSelectText.whiteText.setFormat('5by7', 36, 0xFFFFFFFF, 'center');
+		modSelectText.blurredText.setFormat('5by7', 36, 0xFF00ccff, 'center');
+		add(modSelectText);
+
+    var tooltipTextBG = new FlxSprite(0,720 - 48).makeGraphic(320, 48, 0xFF101010);
+    add(tooltipTextBG);
+		// do da sexy text thing
+		var tooltipText:FlxText = new FlxText(328,720 - 46,640, "Press UP/DOWN to navigate.\nPress ACCEPT to toggle.\nPress ESC to restart the game.", 16);
+		tooltipText.setFormat('VCR OSD Mono', 14, 0xFFFFFFFF, 'center');
+		add(tooltipText);
+	}
+
+
+  public function handleMods() {
+		for (mod in enabled_mods) {
+			var modRenderer:FlxTypedSpriteGroup = new FlxTypedSpriteGroup(328,0);
+			add(modRenderer);
+			mods_rendered.push(modRenderer);
+
+      var modData = getModMetadata('mods/'+mod);
+      trace(modData.title);
+			var backgroundColor:FlxSprite = new FlxSprite(0,0).makeGraphic(624, optionHeight, 0xFF1E1E1E);
+			modRenderer.add(backgroundColor);
+			var modText:FlxText = new FlxText(8,8,0, modData.title, 32);
+			modText.setFormat('VCR OSD Mono', 32, 0xFFFFFFFF, 'left');
+			modRenderer.add(modText);
+      if (modText.fieldWidth >= 400) {
+				modText.scale.x = 400 / modText.fieldWidth;
+				modText.updateHitbox();
+			}
+      var modText:FlxText = new FlxText(8,34,0, modData.description, 16);
+			modText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
+			modRenderer.add(modText);
+      if (modText.fieldWidth >= 400) {
+				modText.scale.x = 400 / modText.fieldWidth;
+				modText.updateHitbox();
+			}
+      var modText:FlxText = new FlxText(8,50,0, 'Licenced under: ' + modData.license, 16);
+			modText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
+			modRenderer.add(modText);
+
+      var modImage:FlxSprite = new FlxSprite(624 - 130,2).loadGraphic(returnGraphic('mods', mod, '_polymod_icon'));
+			modRenderer.add(modImage);
+      modImage.scale.x = 128 / modImage.width;
+      modImage.scale.y = 128 / modImage.height;
+      modImage.updateHitbox();
+
+			if (modText.fieldWidth >= 400) {
+				modText.scale.x = 400 / modText.fieldWidth;
+				modText.updateHitbox();
+			}
+      var checkBox = ScriptedFunkinSprite.init('GayCheckBox'); //CheckboxPreferenceItem(624 - 248,48,false);
+      modRenderer.add(checkBox);
+      checkBox.updateHitbox();
+      checkBoxes.push(checkBox);
+      checkBox.setPosition(328,72);
+      checkBox.scriptSet('currentValue', true);
+		}
+    for (mod in disabled_mods) {
+			var modRenderer:FlxTypedSpriteGroup = new FlxTypedSpriteGroup(328,0);
+			add(modRenderer);
+			mods_rendered.push(modRenderer);
+
+      var modData = getModMetadata('disabledMods/'+mod);
+      trace(modData.title);
+			var backgroundColor:FlxSprite = new FlxSprite(0,0).makeGraphic(624, optionHeight, 0xFF1E1E1E);
+			modRenderer.add(backgroundColor);
+			var modText:FlxText = new FlxText(8,8,0, modData.title, 32);
+			modText.setFormat('VCR OSD Mono', 32, 0xFFFFFFFF, 'left');
+			modRenderer.add(modText);
+      var modText:FlxText = new FlxText(8,34,0, modData.description, 16);
+			modText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
+			modRenderer.add(modText);
+
+      var modImage:FlxSprite = new FlxSprite(624 - 130,2).loadGraphic(returnGraphic('disabledMods', mod, '_polymod_icon'));
+			modRenderer.add(modImage);
+      modImage.scale.x = 128 / modImage.width;
+      modImage.scale.y = 128 / modImage.height;
+      modImage.updateHitbox();
+
+			if (modText.fieldWidth >= 488) {
+				modText.scale.x = 480 / modText.fieldWidth;
+				modText.updateHitbox();
+			}
+      var checkBox = ScriptedFunkinSprite.init('GayCheckBox'); //CheckboxPreferenceItem(624 - 248,48,false);
+      checkBox.setPosition(624 - 60,56);
+      modRenderer.add(checkBox);
+      checkBox.updateHitbox();
+      checkBoxes.push(checkBox);
+      checkBox.scriptSet('currentValue', false);
+		}
+  }
+  function handleModRender(e) {
+		var scrollY = 0;
+		if (cur_select >= 3)
+			scrollY = FlxMath.bound(cur_select - 3, 0, (mods_rendered.length - 3));
+
+		for (i in 0...mods_rendered.length) {
+			var modTitle = mods_rendered[i];
+			intendedYs[i] = ((optionHeight + optionSeparation) * (i-scrollY)) + 58;
+			modTitle.y = FlxMath.lerp(modTitle.y, intendedYs[i], 0.2 - e);
+			modTitle.color = (i != cur_select) ? 0xFFAFAFAF : 0xFFFFFFFF;
+		}
+	}
+  public static function returnGraphic(root:String, mod:String, key:String) {
+    var modKey = root + '/' + mod + '/' + key + '.png';
+    if (fileSystem.exists(modKey)) {
+      var newBitmap:BitmapData = BitmapData.fromFile(modKey);
+      return FlxGraphic.fromBitmapData(newBitmap, false, modKey);
+    }
+
+  }
+
+  public function getModMetadata(rootPath:String) {
+    return Json.parse(fileClass.getContent(rootPath+'/_polymod_meta.json'));
+  }
+
+  function enterThing() {
+    var value = checkBoxes[cur_select].scriptGet('currentValue');
+    checkBoxes[cur_select].scriptSet('currentValue', !value);
+    if (cur_select < enabled_mods.length) {
+      if (!mods_to_disable.contains(enabled_mods[cur_select]))
+        mods_to_disable.push(enabled_mods[cur_select]);
+      else
+        mods_to_disable.remove(enabled_mods[cur_select]);
+    } else {
+      if (!mods_to_enable.contains(disabled_mods[cur_select - enabled_mods.length]))
+        mods_to_enable.push(disabled_mods[cur_select - enabled_mods.length]);
+      else
+        mods_to_enable.remove(disabled_mods[cur_select - enabled_mods.length]);
+    }
+    trace('mods_to_enable: ' + mods_to_enable);
+    trace('mods_to_disable: ' + mods_to_disable);
+  }
+
+	public function update(e) {
+		super.update(e);
+    if (mods_rendered.length != 0) {
+      handleModRender(e);
+    }
+    if (PlayerSettings.player1.controls.UI_DOWN_P && canMove)
+			updateSelection(1);
+		else if (PlayerSettings.player1.controls.UI_UP_P && canMove)
+			updateSelection(-1);
+    else if (PlayerSettings.player1.controls.ACCEPT && canMove) {
+      FunkinSound.playOnce(Paths.sound("remote_click"), 0.75);
+      enterThing();
+    }
+
+		if (FlxG.keys.justPressed.ESCAPE && canMove) {
+      moveMods();
+      FlxG.autoPause = false;
+      execUrl(Sys.programPath());
+      OpenFlSys.exit(0);
+		}
+	}
+  function moveMods() {
+    for (i in mods_to_disable) {
+      fileSystem.rename('mods/'+i,'disabledMods/'+i);
+    }
+    for (i in mods_to_enable) {
+      fileSystem.rename('disabledMods/'+i,'mods/'+i);
+    }
+  }
+  public function updateSelection(increment:Int) {
+		if (increment != 0)
+			FunkinSound.playOnce(Paths.sound("scrollMenu"), 0.75);
+		cur_select = FlxMath.wrap(cur_select+increment, 0, mods_rendered.length - 1);
+	}
+  public static function execUrl(url:String) : Void {
+    switch (Sys.systemName()) {
+        case "Linux", "BSD": Sys.command("xdg-open", [url]);
+        case "Mac": Sys.command("open", [url]);
+        case "Windows": Sys.command("start", [url]);
+        default:
+    }
+}
+}

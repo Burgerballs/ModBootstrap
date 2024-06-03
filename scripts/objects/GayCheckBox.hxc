@@ -1,0 +1,43 @@
+import flixel.FlxG;
+import funkin.graphics.FunkinSprite;
+import funkin.Conductor;
+import funkin.Paths;
+import flixel.effects.FlxFlicker;
+import funkin.modding.base.ScriptedFunkinSprite;
+import flixel.util.FlxTimer;
+
+class GayCheckBox extends ScriptedFunkinSprite
+{
+  public var currentValue:Bool = false;
+  public var prevValue:Bool;
+
+  public function new()
+  {
+    super(0, 0);
+
+    frames = Paths.getSparrowAtlas('optionsbuttongay');
+    animation.addByPrefix('static', 'OFF', 1, false);
+    animation.addByPrefix('checked', 'TURN', 12, false);
+    animation.play('static');
+    antialiasing = false;
+  }
+
+  function update(e)
+  {
+    super.update(e);
+    if (currentValue != prevValue)
+      updateCheck();
+    prevValue = currentValue;
+  }
+
+  function updateCheck() {
+    if (currentValue)
+    {
+      animation.play('checked', true);
+    }
+    else
+    {
+      animation.play('static');
+    }
+  }
+}

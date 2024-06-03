@@ -18,7 +18,7 @@ import funkin.modding.base.ScriptedMusicBeatState;
 import funkin.modding.module.ModuleHandler;
 import funkin.save.Save;
 import funkin.ui.freeplay.CapsuleText;
-
+import openfl.net.FileReference;
 class BootStrapState extends ScriptedMusicBeatState {
 	var binds:Array<Dynamic>;
   var cur_select:Float = 0.0; // current selected mod index, float for math reasons.
@@ -132,8 +132,8 @@ class BootStrapState extends ScriptedMusicBeatState {
 		var tooltipTextBG = new FlxSprite(0,720 - 48).makeGraphic(320, 48, 0xFF101010);
     add(tooltipTextBG);
 		// do da sexy text thing
-		var tooltipText:FlxText = new FlxText(8,720 - 46,320, "Press UP/DOWN to navigate.\nPress ACCEPT to enter.\nPress TAB to enter options.", 16);
-		tooltipText.setFormat('VCR OSD Mono', 14, 0xFFFFFFFF, 'left');
+		var tooltipText:FlxText = new FlxText(8,720 - 46,320, "Press UP/DOWN to navigate.\nPress ACCEPT to enter.\nPress TAB to enter options.\nPress C to see mod credits.", 12);
+		tooltipText.setFormat('VCR OSD Mono', 11, 0xFFFFFFFF, 'left');
 		add(tooltipText);
 	}
 
@@ -227,13 +227,13 @@ class BootStrapState extends ScriptedMusicBeatState {
 				Main.memoryCounter.alpha = 1;
 			});
 		} else if (FlxG.keys.justPressed.TAB && canMove) {
-			// openSubState(ScriptedMusicBeatState.init('BootStrapSettingsSubState'));
-			// change of plans cuz substates hate me
 			if(settings.play_music) {
 				ModuleHandler.getModule("AdaptiveMusicController").scriptCall("play", ['modbootstrap-music-settings']);
 			}
 			FlxG.switchState(new OptionsState());
 			ModuleHandler.getModule("OptionsInjectorBootStrap").scriptSet("fromBootStrapMenu", true); // do it after in order to prevent infinite loop
+		} else if (FlxG.keys.justPressed.C && canMove) {
+      FlxG.switchState(ScriptedMusicBeatState.init('BootStrapCredits'));
 		}
 
 		intendedHandY = mods_rendered[cur_select].y + optionHeight / 4;

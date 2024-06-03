@@ -26,6 +26,9 @@ class BootStrapBinds extends Module {
 	public var binds:Array<Dynamic> = [];
 
 	public function bind(data:Dynamic):Void {
+		if (data.deps == null) {
+			data.deps = [];
+		}
 		binds.push({
 			name:       data.name,
 			description: data.description,
@@ -36,7 +39,8 @@ class BootStrapBinds extends Module {
       author:     data.author,
 			color:      data.color,
 			disclaimer: data.disclaimer,
-			bg_group: data.bg_group
+			bg_group: data.bg_group,
+			deps: data.deps
 		});
 	}
 }
