@@ -278,7 +278,11 @@ class BootStrapManager extends ScriptedMusicBeatState {
     switch (Sys.systemName()) {
         case "Linux", "BSD": Sys.command("xdg-open", [url]);
         case "Mac": Sys.command("open", [url]);
+<<<<<<< Updated upstream
         case "Windows": new Process(url);
+=======
+        case "Windows": new Process(url); // ty swordcube
+>>>>>>> Stashed changes
         default:
     }
 }

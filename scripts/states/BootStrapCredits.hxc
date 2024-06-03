@@ -87,6 +87,9 @@ class BootStrapCredits extends ScriptedMusicBeatState {
     var credPixaText:FlxText = new FlxText(selectorunderlay.x + selectorunderlay.width - 24 - 320,credBurgerballs.y+credBurgerballs.height,320, "Pixa\nArtist for a few UI elements\n\nFun fact this person is the love of my life and i cherish every interaction i have with her! (maybe she also eats mud too idk)\n\nTwitter: @pixa_dewie\nGamebanana: pixa", 16);
 		credPixaText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'right');
 		add(credPixaText);
+    var credSpecial:FlxText = new FlxText(selectorunderlay.x + 8,720 * 0.7,320, "Special Thanks:\ncyn0x8 - Inspiration for this project\nswordcube - Fixed compatibility issues with Windows", 12);
+		credSpecial.setFormat('VCR OSD Mono', 12, 0xFFFFFFFF, 'left');
+		add(credSpecial);
 	}
 
 	public function update(e) {
