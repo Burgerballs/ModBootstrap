@@ -20,7 +20,7 @@ class InitBootstrap extends Module {
 
 	var initialized:Bool = false;
 	var currentState:Dynamic;
-	var version:String = '0.3.0';
+	var version:String = '0.3.1';
 	var options:Array<Dynamic> = [];
 	var settings:Dynamic = {
 		current_mod: "Friday Night Funkin'", // Current mod, will be the mod that will load up on boot if load_menu_on_boot is disabled.
