@@ -175,33 +175,28 @@ class BootStrapManager extends ScriptedMusicBeatState {
 			var modRenderer:FlxTypedSpriteGroup = new FlxTypedSpriteGroup(328,0);
 			add(modRenderer);
 			mods_rendered.push(modRenderer);
-
-      var modData = getModMetadata('disabledMods/'+mod);
-      trace(modData.title);
 			var backgroundColor:FlxSprite = new FlxSprite(0,0).makeGraphic(624, optionHeight, 0xFF1E1E1E);
 			modRenderer.add(backgroundColor);
-			var modText:FlxText = new FlxText(8,8,0, modData.title, 32);
+      var modText:FlxText = new FlxText(8,8,0, StringTools.replace(Reflect.copy(mod), '.zip', ''), 32);
 			modText.setFormat('VCR OSD Mono', 32, 0xFFFFFFFF, 'left');
 			modRenderer.add(modText);
-      var modText:FlxText = new FlxText(8,34,0, modData.description, 16);
-			modText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
-			modRenderer.add(modText);
-
-      var modImage:FlxSprite = new FlxSprite(624 - 130,2).loadGraphic(returnGraphic('disabledMods', mod, '_polymod_icon'));
-			modRenderer.add(modImage);
-      modImage.scale.x = 128 / modImage.width;
-      modImage.scale.y = 128 / modImage.height;
-      modImage.updateHitbox();
-
-			if (modText.fieldWidth >= 488) {
-				modText.scale.x = 480 / modText.fieldWidth;
-				modText.updateHitbox();
-			}
+      if (!StringTools.endsWith(mod, '.zip')) {
+        var modData = getModMetadata('mods/'+mod);
+        addMetadataInfo(mod,modText, modData, modRenderer);
+			} else {
+        var zipText:FlxText = new FlxText(8,36,616, ".ZIP formatted mods cannot use mod metadata in this menu, the ZIP file's name is displayed instead.", 12);
+        zipText.setFormat('VCR OSD Mono', 12, 0xFF000000, 'left');
+        modRenderer.add(zipText);
+      }
+      if (modText.fieldWidth >= 400) {
+        modText.scale.x = 400 / modText.fieldWidth;
+        modText.updateHitbox();
+      }
       var checkBox = ScriptedFunkinSprite.init('GayCheckBox'); //CheckboxPreferenceItem(624 - 248,48,false);
-      checkBox.setPosition(624 - 60,56);
       modRenderer.add(checkBox);
       checkBox.updateHitbox();
       checkBoxes.push(checkBox);
+      checkBox.setPosition(328,72);
       checkBox.scriptSet('currentValue', false);
 		}
   }
