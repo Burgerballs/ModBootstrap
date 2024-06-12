@@ -3,7 +3,6 @@ import funkin.save.Save;
 import Std;
 import funkin.ui.options.OptionsState;
 import funkin.ui.mainmenu.MainMenuState;
-import funkin.ui.options.PageName;
 import flixel.util.FlxSave;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -27,23 +26,23 @@ class OptionsInjectorBootStrap extends Module
     super.onStateChangeEnd(event);
     inOptions = false;
     if(Std.isOfType(event.targetState, OptionsState)){
-      var prefs = event.targetState.pages.get(PageName.Preferences);
+      var prefs = event.targetState.pages.get('preferences');
       inOptions = true;
       var state = event.targetState;
-      var options = event.targetState.pages.get(PageName.Options);
+      var options = event.targetState.pages.get('options');
       var exit = options.items.members[options.items.length - 1];
       exit.y += 100;
       options.items.remove(exit);
 
       var item = options.items.createItem(0, exit.y - 100, "Mod Bootstrap", "bold", function(){
-        options.onSwitch.dispatch(PageName.Colors);
+        options.onSwitch.dispatch('ModBootstrap');
       });
       item.x = (FlxG.width - item.width) / 2;
       options.items.add(exit);
 
-      var leech = event.targetState.addPage(PageName.Colors, new PreferencesMenu());
+      var leech = event.targetState.addPage('ModBootstrap', new PreferencesMenu());
       leech.onExit.add(function(){
-        state.switchPage(PageName.Options);
+        state.switchPage('options');
       });
       for(shit in leech.items){
         shit.destroy();

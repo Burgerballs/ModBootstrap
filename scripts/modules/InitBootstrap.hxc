@@ -20,7 +20,7 @@ class InitBootstrap extends Module {
 
 	var initialized:Bool = false;
 	var currentState:Dynamic;
-	var version:String = '0.3.1';
+	var version:String = '0.3.2';
 	var options:Array<Dynamic> = [];
 	var settings:Dynamic = {
 		current_mod: "Friday Night Funkin'", // Current mod, will be the mod that will load up on boot if load_menu_on_boot is disabled.
@@ -91,6 +91,20 @@ class InitBootstrap extends Module {
 				return; // do nothing.
 			},
 			disclaimer: "This loads the vanilla game, mods that don't require this bootstrap will load as well."
+		}]);
+		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
+			name: "Mod Downloader",
+			description: "Download Mods onto your mods folder.",
+			target: "ComingSoonState",
+			logo: '',
+      bg: '',
+      icon: 'modbootstrap-addons-menu-icon32',
+      author: "Burgerballs",
+			color: 0xFF000000,
+			bg_group: (group) -> {
+				return; // do nothing.
+			},
+			disclaimer: "This feature is coming soon, it isn't out yet"
 		}]);
 		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
 			name: "Friday Night Funkin'",

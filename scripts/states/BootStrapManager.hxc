@@ -53,6 +53,7 @@ class BootStrapManager extends ScriptedMusicBeatState {
   var Process:Dynamic;
   var Sys:Dynamic;
   var OpenFlSys:Dynamic;
+  var tooltipText:FlxText;
 
 
 	public function new() {
@@ -111,7 +112,7 @@ class BootStrapManager extends ScriptedMusicBeatState {
     var tooltipTextBG = new FlxSprite(320,720 - 48).makeGraphic(640, 48, 0xFF101010);
     add(tooltipTextBG);
 		// do da sexy text thing
-		var tooltipText:FlxText = new FlxText(328,720 - 46,640, "Press UP/DOWN to navigate.\nPress ACCEPT to toggle.\nPress ESC to restart the game.", 16);
+		tooltipText = new FlxText(328,720 - 46,640, "Press UP/DOWN to navigate.\nPress ACCEPT to toggle.\nPress ESC to restart the game.", 16);
 		tooltipText.setFormat('VCR OSD Mono', 14, 0xFFFFFFFF, 'center');
 		add(tooltipText);
 
@@ -157,7 +158,7 @@ class BootStrapManager extends ScriptedMusicBeatState {
         addMetadataInfo(mod,modText, modData, modRenderer);
 			} else {
         var zipText:FlxText = new FlxText(8,36,616, ".ZIP formatted mods cannot use mod metadata in this menu, the ZIP file's name is displayed instead.", 12);
-        zipText.setFormat('VCR OSD Mono', 12, 0xFF000000, 'left');
+        zipText.setFormat('VCR OSD Mono', 12, 0xFFFF0000, 'left');
         modRenderer.add(zipText);
       }
       if (modText.fieldWidth >= 400) {
@@ -242,7 +243,8 @@ class BootStrapManager extends ScriptedMusicBeatState {
       else
         mods_to_enable.remove(disabled_mods[cur_select - enabled_mods.length]);
     }
-    hasModifiedMods = mods_to_disable.length >= 1 && mods_to_enable.length >= 1;
+    hasModifiedMods = mods_to_disable.length >= 1 || mods_to_enable.length >= 1;
+    tooltipText.text = hasModifiedMods ? "Press UP/DOWN to navigate.\nPress ACCEPT to toggle.\nPress ESC to restart the game." : "Press UP/DOWN to navigate.\nPress ACCEPT to toggle.\nPress ESC to exit to the ModBootstrap main menu.";
     trace('mods_to_enable: ' + mods_to_enable);
     trace('mods_to_disable: ' + mods_to_disable);
   }

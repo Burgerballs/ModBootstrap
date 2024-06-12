@@ -29,7 +29,7 @@ import funkin.modding.base.ScriptedFunkinSprite;
 
 import StringTools;
 
-class BootStrapCredits extends ScriptedMusicBeatState {
+class ComingSoonState extends ScriptedMusicBeatState {
 	var canMove = true;
 	var bgOverlay:FlxBackdrop;
 	var selectorunderlay:FlxSprite;
@@ -66,30 +66,14 @@ class BootStrapCredits extends ScriptedMusicBeatState {
 		selectorunderlay = new FlxSprite(1280*0.2,720*0.2).makeGraphic(1280 * 0.6, 720*0.6, 0xFF101010);
 		add(selectorunderlay);
 
-    var modSelectText:CapsuleText = new CapsuleText(420,720 * 0.2 + 10, "MODBOOTSTRAP CREDITS", 56);
+    var modSelectText:CapsuleText = new CapsuleText(420,720 * 0.2 + 10, "COMING SOON", 56);
 		modSelectText.whiteText.setFormat('5by7', 36, 0xFFFFFFFF, 'center');
 		modSelectText.blurredText.setFormat('5by7', 36, 0xFF00ccff, 'center');
 		add(modSelectText);
 		modSelectText.clipWidth = 1000; // 0.4.0  can eat a big grass
 
-    // spawning burgerballs
-    var credBurgerballs = new FlxSprite(selectorunderlay.x + 20,selectorunderlay.y + 60).loadGraphic(Paths.image('bootstrapcredits/myke'));
-		add(credBurgerballs);
-
-    var credBurgerballsText:FlxText = new FlxText(selectorunderlay.x+ 24,credBurgerballs.y+credBurgerballs.height,320, "Burgerballs\nProgrammer, UI Designer, Composer\n\nFun fact this person ate mud while coding and it improved their productivity!\n\nTwitter: @Burgerballs9\nGamebanana: burgerballs9", 16);
-		credBurgerballsText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
-		add(credBurgerballsText);
-
-    // spawning wife
-    var credPixa = new FlxSprite(selectorunderlay.x +selectorunderlay.width - 20,selectorunderlay.y + 60).loadGraphic(Paths.image('bootstrapcredits/pixa'));
-		add(credPixa);
-    credPixa.x -= credPixa.width; // im sorry but ur a lil out of the box i hope this fixes it!
-
-    var credPixaText:FlxText = new FlxText(selectorunderlay.x + selectorunderlay.width - 24 - 320,credBurgerballs.y+credBurgerballs.height,320, "Pixa\nArtist for a few UI elements\n\nFun fact this person is the love of my life and i cherish every interaction i have with her! (maybe she also eats mud too idk)\n\nTwitter: @pixa_dewie\nGamebanana: pixa", 16);
-		credPixaText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'right');
-		add(credPixaText);
-    var credSpecial:FlxText = new FlxText(selectorunderlay.x + 8,720 * 0.7,320, "Special Thanks:\ncyn0x8 - Inspiration for this project\nswordcube - Fixed compatibility issues with Windows", 12);
-		credSpecial.setFormat('VCR OSD Mono', 12, 0xFFFFFFFF, 'left');
+    var credSpecial:FlxText = new FlxText(1280*0.2,720*0.2 + 128,1280 * 0.6, "This feature will be in the 0.4.0 version of ModBootstrap!", 16);
+		credSpecial.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'center');
 		add(credSpecial);
 	}
 
