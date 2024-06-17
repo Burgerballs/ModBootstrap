@@ -86,7 +86,7 @@ class BootStrapManager extends ScriptedMusicBeatState {
       return StringTools.endsWith(r, '.zip') || (metadataExists('mods/'+r) && getModMetadata('mods/'+r).title != 'ModBootstrap');
     });
     disabled_mods = fileSystem.readDirectory('disabledMods/').filter((r)  -> {
-      return StringTools.endsWith(r, '.zip') || metadataExists('mods/'+r);
+      return StringTools.endsWith(r, '.zip') || metadataExists('disabledMods/'+r);
     });
     // do da sexy note overlay thing
 		bgOverlay = new FlxBackdrop(null, 0x01).loadGraphic(Paths.image('modloader-underlay'));
@@ -182,7 +182,7 @@ class BootStrapManager extends ScriptedMusicBeatState {
 			modText.setFormat('VCR OSD Mono', 32, 0xFFFFFFFF, 'left');
 			modRenderer.add(modText);
       if (!StringTools.endsWith(mod, '.zip')) {
-        var modData = getModMetadata('mods/'+mod);
+        var modData = getModMetadata('disabledMods/'+mod);
         addMetadataInfo(mod,modText, modData, modRenderer);
 			} else {
         var zipText:FlxText = new FlxText(8,36,616, ".ZIP formatted mods cannot use mod metadata in this menu, the ZIP file's name is displayed instead.", 12);
