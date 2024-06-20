@@ -112,7 +112,7 @@ class BootStrapManager extends ScriptedMusicBeatState {
     var tooltipTextBG = new FlxSprite(320,720 - 48).makeGraphic(640, 48, 0xFF101010);
     add(tooltipTextBG);
 		// do da sexy text thing
-		tooltipText = new FlxText(328,720 - 46,640, "Press UP/DOWN to navigate.\nPress ACCEPT to toggle.\nPress ESC to restart the game.", 16);
+		tooltipText = new FlxText(328,720 - 46,640, "Press UP/DOWN to navigate.\nPress ACCEPT to toggle.\nPress ESC to exit to the ModBootstrap main menu.", 16);
 		tooltipText.setFormat('VCR OSD Mono', 14, 0xFFFFFFFF, 'center');
 		add(tooltipText);
 
@@ -121,15 +121,15 @@ class BootStrapManager extends ScriptedMusicBeatState {
 
   public function addMetadataInfo(modName,modTextTitle,modData,modRenderer) {
     modTextTitle.text = modData.title;
-    var modText:FlxText = new FlxText(8,34,0, modData.description, 16);
-    modText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
+    var modText:FlxText = new FlxText(8,34,0, modData.description, 12);
+    modText.setFormat('VCR OSD Mono', 12, 0xFFFFFFFF, 'left');
     modRenderer.add(modText);
     if (modText.fieldWidth >= 400) {
       modText.scale.x = 400 / modText.fieldWidth;
       modText.updateHitbox();
     }
-    var modText:FlxText = new FlxText(8,50,0, 'Licenced under: ' + modData.license, 16);
-    modText.setFormat('VCR OSD Mono', 16, 0xFFFFFFFF, 'left');
+    var modText:FlxText = new FlxText(8,46,0, 'Licensed under: ' + modData.license + "\nVersion: " + modData.mod_version, 12);
+    modText.setFormat('VCR OSD Mono', 12, 0xFFFFFFFF, 'left');
     modRenderer.add(modText);
 
     var modImage:FlxSprite = new FlxSprite(624 - 130,2).loadGraphic(returnGraphic('mods', modName, '_polymod_icon'));

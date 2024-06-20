@@ -25,6 +25,7 @@ class ExampleModBind extends Module { // Replace the class name with a unique na
           bg: '', // if the bg is set to nothing, it will use the default bg
           icon: 'fnficon32', // path to icon (32x32)
           author: "the elusive my mod team", // name of the people who made the mod
+          version: "0.1.0",
           logo: '', // big logo for the mod.
           color: 0xFFB00B69, // color for the selection tab thingies
           bg_group: (group) -> { // for dynamic bgs, to add stuff you must do "group.add(myVar)"

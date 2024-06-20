@@ -21,8 +21,8 @@ import funkin.ui.freeplay.CapsuleText;
 import openfl.net.FileReference;
 class BootStrapState extends ScriptedMusicBeatState {
 	var binds:Array<Dynamic>;
-  var cur_select:Float = 0.0; // current selected mod index, float for math reasons.
-  var mods_rendered:Array<FlxTypedSpriteGroup> = []; // This looks scary but i dont care nanna nanna boo boo!!
+	var cur_select:Float = 0.0; // current selected mod index, float for math reasons.
+	var mods_rendered:Array<FlxTypedSpriteGroup> = []; // This looks scary but i dont care nanna nanna boo boo!!
 	var mods_bg:Array<FlxTypedSpriteGroup> = []; // collection of sprites if a mod has any.
 	var intendedYs:Array<Float> = [];
 	var intendedHandY:Float;
@@ -41,7 +41,7 @@ class BootStrapState extends ScriptedMusicBeatState {
 	var descriptionTextBG:FlxSprite;
 	var descriptionText:FlxText;
 	var settings:Dynamic;
-	var optionHeight:Int = 48;
+	var optionHeight:Int = 56;
 
 	public function new() {
 		super();
@@ -111,8 +111,8 @@ class BootStrapState extends ScriptedMusicBeatState {
 		add(disclaimerText);
 
 		descriptionTextBG = new FlxSprite(0,0).makeGraphic(1,1, 0xFF000000);
-    descriptionTextBG.alpha = 0.6;
-    add(descriptionTextBG);
+		descriptionTextBG.alpha = 0.6;
+		add(descriptionTextBG);
 
 		descriptionText = new FlxText(360,540,1280 - 400, "Friday Night Funkin", 18);
 		descriptionText.text = "Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...";
@@ -121,16 +121,17 @@ class BootStrapState extends ScriptedMusicBeatState {
 		updateTextBG();
 		handleBinds();
 
-
 		var modSelectTextBG = new FlxSprite(0,0).makeGraphic(320, 56, 0xFF101010);
-    add(modSelectTextBG);
+    	add(modSelectTextBG);
+
 		// do da sexy text thing
 		var modSelectText:CapsuleText = new CapsuleText(60,10, "MOD SELECT", 56);
 		modSelectText.whiteText.setFormat('5by7', 36, 0xFFFFFFFF, 'center');
 		modSelectText.blurredText.setFormat('5by7', 36, 0xFF00ccff, 'center');
 		add(modSelectText);
 		var tooltipTextBG = new FlxSprite(0,720 - 48).makeGraphic(320, 48, 0xFF101010);
-    add(tooltipTextBG);
+    	add(tooltipTextBG);
+
 		// do da sexy text thing
 		var tooltipText:FlxText = new FlxText(8,720 - 46,320, "Press UP/DOWN to navigate.\nPress ACCEPT to enter.\nPress TAB to enter options.\nPress C to see mod credits.", 12);
 		tooltipText.setFormat('VCR OSD Mono', 11, 0xFFFFFFFF, 'left');
@@ -172,8 +173,12 @@ class BootStrapState extends ScriptedMusicBeatState {
 				var modTextAuthor:FlxText = new FlxText(4,24,0, 'By: "' + bind.author + '"', 14);
 				modTextAuthor.setFormat('VCR OSD Mono', 14, 0xFFFFFFFF, 'left');
 				modRenderer.add(modTextAuthor);
+
+				var verText:FlxText = new FlxText(4,36,0, bind.version, 14);
+				verText.setFormat('VCR OSD Mono', 14, 0xFFFFFFFF, 'left');
+				modRenderer.add(verText);
 			}
-			var modIcon:FlxSprite = new FlxSprite(312 - 36,optionHeight > 32 ? optionHeight / 8 : 0).loadGraphic(Paths.image(bind.icon));
+			var modIcon:FlxSprite = new FlxSprite(312 - 36, optionHeight > 32 ? optionHeight / 8 : 0).loadGraphic(Paths.image(bind.icon));
 			modRenderer.add(modIcon);
 			intendedYs.push(0);
 			columnHeight += optionHeight + 4;
