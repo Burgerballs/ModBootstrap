@@ -5,10 +5,11 @@ typedef Bind = {
 	name:String, // name of your mod, `Save.instance.modOptions.get("ModBootstrap").selected_mod` will use this.
 	target:String, // target `ScriptedMusicBeatState` class name to open after `on_init`
 	bg:String, // path to the mod bg, if it is null, it will be set to the default.
-  icon:String, // path to the mod icon, if it is null, it will be set to the default. Advisable to be 32x32.
-  description:String, // Description of the mod.
-  logo:String, // path to the mod logo, used for the title in the middle, if null, it's replaced with a name.
-  author:String, // name of the ones who made the mod.
+	icon:String, // path to the mod icon, if it is null, it will be set to the default. Advisable to be 32x32.
+	description:String, // Description of the mod.
+	logo:String, // path to the mod logo, used for the title in the middle, if null, it's replaced with a name.
+	author:String, // name of the ones who made the mod.
+	version:String, // version number.
 	color:Int,
 	disclaimer:String,
 	bg_group:Null<(Dynamic)->Void>
@@ -34,9 +35,10 @@ class BootStrapBinds extends Module {
 			description: data.description,
 			target:     data.target,
 			bg:         data.bg,
-      icon:       data.icon,
-      logo:       data.logo,
-      author:     data.author,
+			icon:       data.icon,
+			logo:       data.logo,
+			author:     data.author,
+			version:    data.version,
 			color:      data.color,
 			disclaimer: data.disclaimer,
 			bg_group: data.bg_group,
