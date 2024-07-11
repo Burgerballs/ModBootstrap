@@ -93,20 +93,6 @@ class InitBootstrap extends Module {
 			disclaimer: "This loads the vanilla game, mods that don't require this bootstrap will load as well."
 		}]);
 		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
-			name: "Mod Downloader",
-			description: "Download Mods onto your mods folder.",
-			target: "ComingSoonState",
-			logo: '',
-      bg: '',
-      icon: 'modbootstrap-addons-menu-icon32',
-      author: "Burgerballs",
-			color: 0xFF000000,
-			bg_group: (group) -> {
-				return; // do nothing.
-			},
-			disclaimer: "This feature is coming soon, it isn't out yet"
-		}]);
-		ModuleHandler.getModule("BootStrapBinds").scriptCall("bind", [{
 			name: "Friday Night Funkin'",
 			description: "Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! He's an ex-rockstar, the only way to get to his heart? The power of music...",
 			target: "BaseTitleState",
